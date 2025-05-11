@@ -198,15 +198,240 @@ int piece::color() const {
 	return m_color;
 }
 
-std::istream& operator>>(std::istream& is, piece& p) {
-	
+
+/*
+Context-free grammar:
+	PIECE -> SIDE | COLOR | (TL , TR , BL , BR)
+	TL -> [] | () | (PIECE)
+	TR -> [] | () | (PIECE)
+	BL -> [] | () | (PIECE)
+	BR -> [] | () | (PIECE)
+*/
+
+void skip(std::istream& is) {
+    char c = 0;
+    is >> c;
+    is.putback(c);
 }
+
+piece TL(std::istream& is);
+piece TR(std::istream& is);
+piece BL(std::istream& is);
+piece BR(std::istream& is);
+
+void set_true(piece& p)  {
+	for(uint32_t i = 0; i < p.side(); i++) {
+		for(uint32_t j = 0; j < p.side(); j++)
+			p(i,j) = true;
+	}
+}
+
+void set_false(piece& p)  {
+	for(uint32_t i = 0; i < p.side(); i++) {
+		for(uint32_t j = 0; j < p.side(); j++)
+			p(i,j) = false;
+	}
+}
+
+piece PIECE(std::istream& is) {
+	// PIECE -> SIDE | COLOR | (TL , TR , BL , BR)
+
+	piece p;
+	assert(p.empty());
+
+	skip(is);
+	int color = 0;
+	int side = 0;
+
+	char c = is.peek();
+	if(c != '(' && c != ')' && c != '[' && c != ']') {
+		if((c <= '0' || c > '9') && c != '(' && c != ')') {throw tetris_exception("Wrong format.");}
+		while(c > '0' && c <= '9'){
+			is >> c;
+			if(c <= '0' || c > '9') {throw tetris_exception("Wrong format.");}
+			side += c - '0';
+			c = is.peek();
+			if(c > '0' && c <= '9') side *= 10;
+		}
+		skip(is);
+		c = is.peek();
+		if((c <= '0' || c > '9') && c != '(' && c != ')') {throw tetris_exception("Wrong format.");}
+		while(c > '0' && c <= '9'){
+			is >> c;
+			if(c <= '0' || c > '9') {throw tetris_exception("Wrong format.");}
+			color += c - '0';
+			c = is.peek();
+			if(c > '0' && c <= '9') color *= 10;
+		}
+		piece s(side,color);
+		p = s;
+	}
+
+	
+	skip(is);
+	c = is.peek();
+
+	if(c == '(') {
+		p = TL(is);
+		p = TR(is);
+		p = BL(is);
+		p = BR(is);
+	}
+
+	skip(is);
+	return p;
+}
+
+piece TL(std::istream& is) {
+	// TL -> [] | () | (PIECE)
+
+	skip(is);
+	piece p;
+
+    char c = 0;
+    is >> c;
+    std::cout<<"c è "<<c<<std::endl;
+    char h = is.peek();
+    std::cout<<"h è "<<h<<std::endl;
+    if (c != '(' && c != '[' ) { throw tetris_exception("Expected TL '(' or '['"); }
+    
+    skip(is);
+    c = is.peek();
+    if(c == ']') {
+    	set_false(p);
+        is >> c;
+        skip(is);
+        return p;
+    } else if (c == ')') {
+    	set_true(p);
+        is >> c;
+        skip(is);
+        return p;
+    } else {
+    	skip(is);
+    	piece n = PIECE(is);
+    	is >> c;
+    }
+
+
+    skip(is);
+    return p;
+}
+
+piece TR(std::istream& is) {
+	// TR -> [] | () | (PIECE)
+
+	skip(is);
+	piece p;
+
+    char c = 0;
+    is >> c;
+    if (c != '(' && c != '[' ) { throw tetris_exception("Expected TR '(' or '['"); }
+    
+    skip(is);
+    c = is.peek();
+    if(c == ']') {
+    	set_false(p);
+        is >> c;
+        skip(is);
+        return p;
+    } else if (c == ')') {
+    	set_true(p);
+        is >> c;
+        skip(is);
+        return p;
+    } else {
+    	skip(is);
+    	piece n = PIECE(is);
+    	is >> c;
+    }
+
+
+    skip(is);
+    return p;
+}
+
+
+piece BL(std::istream& is) {
+	// BL -> [] | () | (PIECE)
+
+	skip(is);
+	piece p;
+
+    char c = 0;
+    is >> c;
+    if (c != '(' && c != '[' ) { throw tetris_exception("Expected BL '(' or '['"); }
+    
+    skip(is);
+    c = is.peek();
+    if(c == ']') {
+    	set_false(p);
+        is >> c;
+        skip(is);
+        return p;
+    } else if (c == ')') {
+    	set_true(p);
+        is >> c;
+        skip(is);
+        return p;
+    } else {
+    	skip(is);
+    	piece n = PIECE(is);
+    	is >> c;
+    }
+
+
+    skip(is);
+    return p;
+}
+
+piece BR(std::istream& is) {
+	// BR -> [] | () | (PIECE)
+
+	skip(is);
+	piece p;
+
+    char c = 0;
+    is >> c;
+    if (c != '(' && c != '[' ) { throw tetris_exception("Expected BR '(' or '['"); }
+    
+    skip(is);
+    c = is.peek();
+    if(c == ']') {
+    	set_false(p);
+        is >> c;
+        skip(is);
+        return p;
+    } else if (c == ')') {
+    	set_true(p);
+        is >> c;
+        skip(is);
+        return p;
+    } else {
+    	skip(is);
+    	piece n = PIECE(is);
+    	is >> c;
+    }
+
+
+    skip(is);
+    return p;
+}
+
+std::istream& operator>>(std::istream& is, piece& p) {
+    p = PIECE(is);
+    return is;
+}
+
 
 
 std::ostream& operator<<(std::ostream& os, piece const& p) {
 
-
-	
+	os << p.side();
+	os << ' ';
+	os << p.color();
+	os << ' ';
+	return os;
 }
 
 

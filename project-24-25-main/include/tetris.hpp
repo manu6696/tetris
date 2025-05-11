@@ -47,6 +47,7 @@ private:
 
 std::istream& operator>>(std::istream& is, piece& p);
 std::ostream& operator<<(std::ostream& os, piece const& p);
+
 /*
 struct tetris_piece {
     piece p;
