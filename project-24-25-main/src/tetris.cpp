@@ -179,7 +179,6 @@ void piece::cut_row(uint32_t i) {
 }
 
 void piece::print_ascii_art(std::ostream& os) const {
-
 	for(uint32_t i = 0; i < m_side; i++) {
 		for(uint32_t j = 0; j < m_side; j++) {
 			 if (m_grid[i][j]) {
@@ -190,7 +189,6 @@ void piece::print_ascii_art(std::ostream& os) const {
 		}
 		os << std::endl;
 	}
-	
 }
 
 uint32_t piece::side() const {
@@ -200,7 +198,16 @@ int piece::color() const {
 	return m_color;
 }
 
+std::istream& operator>>(std::istream& is, piece& p) {
+	
+}
 
+
+std::ostream& operator<<(std::ostream& os, piece const& p) {
+
+
+	
+}
 
 
 
