@@ -162,7 +162,7 @@ void piece::rotate() {
 		}
 		for(uint32_t i = 0; i < m_side; i++) {
 			for(uint32_t j = 0; j < m_side; j++) {
-				m_grid[i][j] = t_grid[j][m_side-i-1];
+				m_grid[j][m_side-i-1] = t_grid[i][j];
 			}
 		}
 	}
@@ -179,16 +179,18 @@ void piece::cut_row(uint32_t i) {
 }
 
 void piece::print_ascii_art(std::ostream& os) const {
+
 	for(uint32_t i = 0; i < m_side; i++) {
 		for(uint32_t j = 0; j < m_side; j++) {
 			 if (m_grid[i][j]) {
-			     os << "\033[48;5;" << int(m_color) << "m" << ' ' << "\033[m";
+			    os << "\033[48;5;" << int(m_color) << "m" << ' ' << "\033[m";
 			 } else {
-			     os << ' ';
+			    os << ' ';
 			 }
 		}
 		os << std::endl;
 	}
+	
 }
 
 uint32_t piece::side() const {
@@ -197,7 +199,6 @@ uint32_t piece::side() const {
 int piece::color() const {
 	return m_color;
 }
-
 
 
 
