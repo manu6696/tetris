@@ -44,6 +44,7 @@ private:
     bool** m_grid;
 };
 
+/*
 std::istream& operator>>(std::istream& is, piece& p);
 std::ostream& operator<<(std::ostream& os, piece const& p);
 
@@ -53,7 +54,7 @@ struct tetris_piece {
     int y;
 };
 
-class tetris  //
+class tetris  
 {
     struct node {
         tetris_piece tp;
@@ -90,7 +91,7 @@ public:
         reference operator*();
         pointer operator->();
         iterator& operator++();
-        iterator operator++(int /*dummy*/);
+        iterator operator++(int /*dummy);                 /// ricordarsi
         bool operator==(iterator const& rhs) const;
         bool operator!=(iterator const& rhs) const;
 
@@ -108,7 +109,7 @@ public:
         reference operator*() const;
         pointer operator->() const;
         const_iterator& operator++();
-        const_iterator operator++(int /*dummy*/);
+        const_iterator operator++(int /*dummy);                 /// ricordarsi
         bool operator==(const_iterator const& rhs) const;
         bool operator!=(const_iterator const& rhs) const;
 
@@ -134,3 +135,4 @@ private:
 
 std::ostream& operator<<(std::ostream& os, tetris const& t);
 std::istream& operator>>(std::istream& is, tetris& t);
+*/
