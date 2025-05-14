@@ -1,5 +1,5 @@
 #include "tetris.hpp"
-
+#include <string>
 
 //////////////
 /*	Piece	*/
@@ -9,7 +9,6 @@ piece::piece() : m_side(0), m_color(0), m_grid(nullptr) {}
 
 piece::piece(uint32_t s, uint8_t c) : piece() {
 	if(c == 0 ) throw tetris_exception("Color not valid.");
-
 	bool power_of = false;
 	uint32_t i = 1;
 	while(!power_of && s >= i ) {
@@ -201,11 +200,10 @@ int piece::color() const {
 
 /*
 Context-free grammar:
-	PIECE -> SIDE | COLOR | (TL , TR , BL , BR)
-	TL -> [] | () | (PIECE)
-	TR -> [] | () | (PIECE)
-	BL -> [] | () | (PIECE)
-	BR -> [] | () | (PIECE)
+	PIECE -> SIDE | COLOR | QUAD
+	QUAD -> (TL, TR, BL, BR) | [] | ()
+
+	EX. 4 75 ( ( []()[]() )  ( ()[]()[] )   ( []()()() )   ( ()[]()() ) )
 */
 
 void skip(std::istream& is) {
@@ -214,10 +212,7 @@ void skip(std::istream& is) {
     is.putback(c);
 }
 
-piece TL(std::istream& is);
-piece TR(std::istream& is);
-piece BL(std::istream& is);
-piece BR(std::istream& is);
+piece QUAD(std::istream& is, uint32_t side, uint8_t color);
 
 void set_true(piece& p)  {
 	for(uint32_t i = 0; i < p.side(); i++) {
@@ -234,188 +229,114 @@ void set_false(piece& p)  {
 }
 
 piece PIECE(std::istream& is) {
-	// PIECE -> SIDE | COLOR | (TL , TR , BL , BR)
+	// PIECE -> SIDE | COLOR | QUAD
 
 	piece p;
 	assert(p.empty());
 
 	skip(is);
-	int color = 0;
-	int side = 0;
+	uint8_t color = 0;
+	uint32_t side = 0;
 
 	char c = is.peek();
-	if(c != '(' && c != ')' && c != '[' && c != ']') {
-		if((c <= '0' || c > '9') && c != '(' && c != ')') {throw tetris_exception("Wrong format.");}
-		while(c > '0' && c <= '9'){
-			is >> c;
-			if(c <= '0' || c > '9') {throw tetris_exception("Wrong format.");}
-			side += c - '0';
-			c = is.peek();
-			if(c > '0' && c <= '9') side *= 10;
-		}
+	if(c >= '0' and c <= '9') {
+		double x = 0.0;
+		is >> x;
+		side = x;
 		skip(is);
-		c = is.peek();
-		if((c <= '0' || c > '9') && c != '(' && c != ')') {throw tetris_exception("Wrong format.");}
-		while(c > '0' && c <= '9'){
-			is >> c;
-			if(c <= '0' || c > '9') {throw tetris_exception("Wrong format.");}
-			color += c - '0';
-			c = is.peek();
-			if(c > '0' && c <= '9') color *= 10;
+		if(c >= '0' and c <= '9') {
+			double y = 0.0;
+			is >> y;
+			color = y;
+			skip(is);	
+		} else {
+			throw tetris_exception("Invalid color.");
 		}
 		piece s(side,color);
 		p = s;
+	} else {
+		throw tetris_exception("Invalid side.");
 	}
 
-	
 	skip(is);
 	c = is.peek();
-
-	if(c == '(') {
-		p = TL(is);
-		p = TR(is);
-		p = BL(is);
-		p = BR(is);
+	if (c == '(' || c == '[') {
+		p = QUAD(is, side, color);
+	} else {
+		throw tetris_exception("Expected '(' or '['");
 	}
-
-	skip(is);
 	return p;
 }
 
-piece TL(std::istream& is) {
-	// TL -> [] | () | (PIECE)
+piece QUAD(std::istream& is, uint32_t side, uint8_t color) {
+	// QUAD -> (TL, TR, BL, BR) | () | []
+	// ( ( []()[]() )  ( ()[]()[] )   ( []()()() )   ( ()[]()() ) )
+
+	piece p(side, color);
+	piece tl(side, color);
+	piece tr(side, color);
+	piece bl(side, color);
+	piece br(side, color);
+	set_false(p);
 
 	skip(is);
-	piece p;
-
-    char c = 0;
+	char c = 0;
     is >> c;
-    std::cout<<"c è "<<c<<std::endl;
-    char h = is.peek();
-    std::cout<<"h è "<<h<<std::endl;
-    if (c != '(' && c != '[' ) { throw tetris_exception("Expected TL '(' or '['"); }
-    
     skip(is);
-    c = is.peek();
-    if(c == ']') {
-    	set_false(p);
-        is >> c;
-        skip(is);
-        return p;
-    } else if (c == ')') {
-    	set_true(p);
-        is >> c;
-        skip(is);
-        return p;
-    } else {
-    	skip(is);
-    	piece n = PIECE(is);
+    if(c != '(' && c != '[' && c != ')' && c != ']') { throw tetris_exception("Invalid character."); }
+    //std::cout<<"c prima = "<<c << " e size = " << side <<std::endl;
+    char c_next = is.peek();
+    if(c != '(' && c != '[' && c != ')' && c != ']') { throw tetris_exception("Invalid character."); }
+    if(c_next != '(' && c_next != '[' && c_next != ')' && c_next != ']') { throw tetris_exception("Invalid character."); }
+    if(c_next == ')' || c_next == ']') {
     	is >> c;
+    	//std::cout<<"c dentro = "<<c <<std::endl;
     }
 
+	if (c == '(' || c == '[') {
+		tl = QUAD(is, side/2, color);
+		//std::cout<<"tl ------> tr"<<std::endl;
+		tr = QUAD(is, side/2, color);
+		//std::cout<<"tr ------> bl"<<std::endl;
+		bl = QUAD(is, side/2, color);
+		//std::cout<<"bl ------> br"<<std::endl;
+		br = QUAD(is, side/2, color);
+		//std::cout<<"---------- end"<<std::endl;
 
-    skip(is);
-    return p;
-}
+		for(uint32_t i = 0; i < side / 2; i++) {			//TL
+			for(uint32_t j = 0; j < side / 2; j++) {
+				p(i,j) = tl(i,j);
+			}
+		}
 
-piece TR(std::istream& is) {
-	// TR -> [] | () | (PIECE)
+		for(uint32_t i = 0; i < side / 2; i++) {			//TR
+			for(uint32_t j = side / 2; j < side; j++) {
+				p(i,j) = tr(i,j - side / 2);
+			}
+		}
 
-	skip(is);
-	piece p;
+		for(uint32_t i = side / 2; i < side; i++) {			//BL
+			for(uint32_t j = 0; j < side / 2; j++) {
+				p(i,j) = bl(i - side / 2,j);
+			}
+		}
 
-    char c = 0;
-    is >> c;
-    if (c != '(' && c != '[' ) { throw tetris_exception("Expected TR '(' or '['"); }
-    
-    skip(is);
-    c = is.peek();
-    if(c == ']') {
-    	set_false(p);
-        is >> c;
-        skip(is);
-        return p;
-    } else if (c == ')') {
-    	set_true(p);
-        is >> c;
-        skip(is);
-        return p;
-    } else {
-    	skip(is);
-    	piece n = PIECE(is);
-    	is >> c;
-    }
+		for(uint32_t i = side / 2; i < side; i++) {			//BR
+			for(uint32_t j = side / 2; j < side; j++) {
+				p(i,j) = br(i - side / 2,j - side / 2);
+			}
+		}
 
-
-    skip(is);
-    return p;
-}
-
-
-piece BL(std::istream& is) {
-	// BL -> [] | () | (PIECE)
-
-	skip(is);
-	piece p;
-
-    char c = 0;
-    is >> c;
-    if (c != '(' && c != '[' ) { throw tetris_exception("Expected BL '(' or '['"); }
-    
-    skip(is);
-    c = is.peek();
-    if(c == ']') {
-    	set_false(p);
-        is >> c;
-        skip(is);
-        return p;
-    } else if (c == ')') {
-    	set_true(p);
-        is >> c;
-        skip(is);
-        return p;
-    } else {
-    	skip(is);
-    	piece n = PIECE(is);
-    	is >> c;
-    }
-
-
-    skip(is);
-    return p;
-}
-
-piece BR(std::istream& is) {
-	// BR -> [] | () | (PIECE)
-
-	skip(is);
-	piece p;
-
-    char c = 0;
-    is >> c;
-    if (c != '(' && c != '[' ) { throw tetris_exception("Expected BR '(' or '['"); }
-    
-    skip(is);
-    c = is.peek();
-    if(c == ']') {
-    	set_false(p);
-        is >> c;
-        skip(is);
-        return p;
-    } else if (c == ')') {
-    	set_true(p);
-        is >> c;
-        skip(is);
-        return p;
-    } else {
-    	skip(is);
-    	piece n = PIECE(is);
-    	is >> c;
-    }
-
-
-    skip(is);
-    return p;
+		skip(is);
+		is >> c;
+		if(c != ')') { throw tetris_exception("Missing ')'"); }
+		//std::cout<<"c consumata dai livelli = "<<c<<std::endl;
+	} else if (c == ']') {
+		set_false(p);
+	} else if (c == ')') {
+		set_true(p);
+	}
+	return p;
 }
 
 std::istream& operator>>(std::istream& is, piece& p) {
@@ -423,7 +344,100 @@ std::istream& operator>>(std::istream& is, piece& p) {
     return is;
 }
 
+int check(piece const& p) {
+	int res = -1;
+	uint32_t qty_empty = 0;
+	uint32_t qty_full = 0;
+	for(uint32_t i = 0; i < p.side(); i++) {
+		for(uint32_t j = 0; j < p.side(); j++) {
+			if(p(i,j)) qty_full += 1;
+			else qty_empty += 1;
+		}
+	}
+	if(qty_full == p.side()) res = 1;
+	if(qty_empty == p.side()) res = 2;
+	return res;
+}
 
+void scrivi(std::ostream& os, uint32_t side, piece const& p) {
+	if(side > 1) {
+
+		piece tl(side/2, 1);
+		piece tr(side/2, 1);
+		piece bl(side/2, 1);
+		piece br(side/2, 1);
+
+		for(uint32_t i = 0; i < side / 2; i++) {			//TL
+			for(uint32_t j = 0; j < side / 2; j++) {
+				tl(i,j) = p(i,j);
+			}
+		}
+
+		for(uint32_t i = 0; i < side / 2; i++) {			//TR
+			for(uint32_t j = 0; j < side / 2; j++) {
+				tr(i,j) = p(i,j + side / 2);
+			}
+		}
+
+		for(uint32_t i = 0; i < side / 2; i++) {			//BL
+			for(uint32_t j = 0; j < side / 2; j++) {
+				bl(i,j) = p(i + side / 2,j);
+			}
+		}
+
+		for(uint32_t i = 0; i < side / 2; i++) {			//BR
+			for(uint32_t j = 0; j < side / 2; j++) {
+				br(i,j) = p(i + side / 2,j + side / 2);
+			}
+		}
+
+		int skip_tl = check(tl);
+		int skip_tr = check(tr);
+		int skip_bl = check(bl);
+		int skip_br = check(br);
+		std::cout<<std::endl;
+		std::cout<<"skip_tl = "<<skip_tl<<std::endl;
+		std::cout<<"skip_tr = "<<skip_tr<<std::endl;
+		std::cout<<"skip_bl = "<<skip_bl<<std::endl;
+		std::cout<<"skip_br = "<<skip_br<<std::endl;
+		std::cout<<std::endl;
+		os << '(';
+		if(skip_tl == -1) scrivi(os, side / 2, tl);
+		else if (skip_tl == 1) {
+		}
+		else if (skip_tl == 2){
+		}
+
+		if(skip_tr == -1) scrivi(os, side / 2, tr);
+		else if (skip_tr == 1) {
+		}
+		else if (skip_tr == 2){
+		}
+
+		if(skip_bl == -1) scrivi(os, side / 2, bl);
+		else if (skip_bl == 1) {
+		}
+		else if (skip_bl == 2){
+		}
+		
+		if(skip_br == -1) scrivi(os, side / 2, br);
+		else if (skip_br == 1) {
+		}
+		else if (skip_br == 2){
+		}
+		os << ')';
+	}
+
+	if(side == 1) {
+		if(p(0,0)) {
+			os << '(';
+			os << ')';
+		} else {
+			os << '[';
+			os << ']';
+		}
+	}
+}
 
 std::ostream& operator<<(std::ostream& os, piece const& p) {
 
@@ -431,6 +445,7 @@ std::ostream& operator<<(std::ostream& os, piece const& p) {
 	os << ' ';
 	os << p.color();
 	os << ' ';
+	scrivi(os, p.side(), p);
 	return os;
 }
 
