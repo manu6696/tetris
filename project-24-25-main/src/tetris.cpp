@@ -16,7 +16,7 @@ piece::piece(uint32_t s, uint8_t c) : piece() {
 		i *= 2;
 	}
 
-	if(!power_of) throw tetris_exception("Size is not a power of 2.");
+	if(!power_of) throw tetris_exception("Side is not a power of 2.");
 
 	m_side = s;
 	m_color = c;
@@ -32,7 +32,7 @@ piece::piece(piece const& rhs) : piece(rhs.m_side, rhs.m_color) {
 }
 
 piece::piece(piece&& rhs) : piece()  {
-	*this = std::move(rhs); //copy assignment operator
+	*this = std::move(rhs);
 }
 
 piece::~piece() {
@@ -201,7 +201,7 @@ int piece::color() const {
 /*
 Context-free grammar:
 	PIECE -> SIDE | COLOR | QUAD
-	QUAD -> (TL, TR, BL, BR) | [] | ()
+	QUAD -> (TL, TR, BL, BR) | () | []
 
 	EX. 4 75 ( ( []()[]() )  ( ()[]()[] )   ( []()()() )   ( ()[]()() ) )
 */
@@ -270,7 +270,6 @@ piece PIECE(std::istream& is) {
 
 piece QUAD(std::istream& is, uint32_t side, uint8_t color) {
 	// QUAD -> (TL, TR, BL, BR) | () | []
-	// ( ( []()[]() )  ( ()[]()[] )   ( []()()() )   ( ()[]()() ) )
 
 	piece p(side, color);
 	piece tl(side, color);
@@ -354,14 +353,13 @@ int check(piece const& p) {
 			else qty_empty += 1;
 		}
 	}
-	if(qty_full == p.side()) res = 1;
-	if(qty_empty == p.side()) res = 2;
+	if(qty_full == p.side() * p.side()) res = 1;
+	if(qty_empty == p.side() * p.side()) res = 2;
 	return res;
 }
 
 void scrivi(std::ostream& os, uint32_t side, piece const& p) {
 	if(side > 1) {
-
 		piece tl(side/2, 1);
 		piece tr(side/2, 1);
 		piece bl(side/2, 1);
@@ -395,37 +393,26 @@ void scrivi(std::ostream& os, uint32_t side, piece const& p) {
 		int skip_tr = check(tr);
 		int skip_bl = check(bl);
 		int skip_br = check(br);
-		std::cout<<std::endl;
-		std::cout<<"skip_tl = "<<skip_tl<<std::endl;
-		std::cout<<"skip_tr = "<<skip_tr<<std::endl;
-		std::cout<<"skip_bl = "<<skip_bl<<std::endl;
-		std::cout<<"skip_br = "<<skip_br<<std::endl;
-		std::cout<<std::endl;
-		os << '(';
-		if(skip_tl == -1) scrivi(os, side / 2, tl);
-		else if (skip_tl == 1) {
-		}
-		else if (skip_tl == 2){
-		}
-
-		if(skip_tr == -1) scrivi(os, side / 2, tr);
-		else if (skip_tr == 1) {
-		}
-		else if (skip_tr == 2){
-		}
-
-		if(skip_bl == -1) scrivi(os, side / 2, bl);
-		else if (skip_bl == 1) {
-		}
-		else if (skip_bl == 2){
+		bool sk1 = (skip_tl == 1 && skip_tr == 1 && skip_bl == 1 && skip_br == 1);
+		bool sk2 = (skip_tl == 2 && skip_tr == 2 && skip_bl == 2 && skip_br == 2);
+		if(sk2) {
+			os << '[';
+		} else {
+			os << '(';
 		}
 		
-		if(skip_br == -1) scrivi(os, side / 2, br);
-		else if (skip_br == 1) {
+		if(!sk1 && !sk2) {
+			scrivi(os, side / 2, tl);
+			scrivi(os, side / 2, tr);
+			scrivi(os, side / 2, bl);
+			scrivi(os, side / 2, br);
 		}
-		else if (skip_br == 2){
+
+		if(sk2) {
+			os << ']';
+		} else {
+			os << ')';
 		}
-		os << ')';
 	}
 
 	if(side == 1) {
@@ -440,7 +427,6 @@ void scrivi(std::ostream& os, uint32_t side, piece const& p) {
 }
 
 std::ostream& operator<<(std::ostream& os, piece const& p) {
-
 	os << p.side();
 	os << ' ';
 	os << p.color();
@@ -451,7 +437,157 @@ std::ostream& operator<<(std::ostream& os, piece const& p) {
 
 
 
+//////////////
+/*	Tetris	*/
+//////////////
 
+tetris::tetris() : m_score(0), m_width(0), m_height(0), m_field(nullptr) {}
 
+tetris::tetris(uint32_t w, uint32_t h, uint32_t s) : tetris() {
+	if(w == 0 || h == 0) {
+		throw tetris_exception("Game board dimension can't be equal to 0.");
+	}
+	m_width = w;
+	m_height = h;
+	m_score = s;
+}
 
+tetris::tetris(tetris const& rhs) {
+	m_width = rhs.m_width;
+	m_height = rhs.m_height;
+	m_score = rhs.m_score;
 
+	node* pc = rhs.m_field;
+	m_field = nullptr;
+	node* tail = m_field;
+	while(pc) {
+		node* n = new node{pc->tp, nullptr};
+		if(m_field == nullptr) {
+			m_field = n;
+		} else {
+			tail->next = n;
+		}
+		tail = n;
+		pc = pc->next;
+	}
+}
+
+tetris::tetris(tetris&& rhs) {
+	*this = std::move(rhs);
+}
+
+tetris::~tetris() {
+	m_score = 0;
+	m_width = 0;
+	m_height = 0;
+
+	while(m_field) {
+		node* tmp = m_field;
+		m_field = m_field->next;
+		delete tmp;
+	}
+}
+
+tetris& tetris::operator=(tetris const& rhs) {
+	if(this != &rhs) {
+		while(m_field) {
+			node* tmp = m_field;
+			m_field = m_field->next;
+			delete tmp;
+		}
+
+		m_score = rhs.m_score;
+		m_width = rhs.m_width;
+		m_height = rhs.m_height;
+		node* pc = rhs.m_field;
+		m_field = nullptr;
+		node* tail = m_field;
+		while(pc) {
+			node* n = new node{pc->tp, nullptr};
+			if(m_field == nullptr) {
+				m_field = n;
+			} else {
+				tail->next = n;
+			}
+			tail = n;
+			pc = pc->next;
+		}
+	}
+	return *this;
+}
+
+tetris& tetris::operator=(tetris&& rhs) {
+	if(this != &rhs) {
+		while(m_field) {
+			node* tmp = m_field;
+			m_field = m_field->next;
+			delete tmp;
+		}
+
+		m_score = rhs.m_score;
+		m_width = rhs.m_width;
+		m_height = rhs.m_height;
+		m_field = rhs.m_field;
+
+		rhs.m_score = 0;
+		rhs.m_width = 0;
+		rhs.m_height = 0;
+		rhs.m_field = nullptr;
+	}
+	return *this;
+}
+
+bool tetris::operator==(tetris const& rhs) const {
+	bool equal = true;
+	if(m_score != rhs.m_score) equal = false;
+	if(m_width != rhs.m_width) equal = false;
+	if(m_height != rhs.m_height) equal = false;
+
+	node* pc_rhs = rhs.m_field;
+	node* pc_this = this->m_field;
+	while(equal && pc_rhs && pc_this) {
+		if(pc_rhs->tp.x != pc_this->tp.x) equal = false;
+		if(pc_rhs->tp.y != pc_this->tp.y) equal = false;
+		if(pc_rhs->tp.p != pc_this->tp.p) equal = false;
+		pc_this = pc_this->next;
+		pc_rhs = pc_rhs->next;
+	}
+
+	if(pc_rhs && !pc_this) equal = false;
+	if(!pc_rhs && pc_this) equal = false;
+	return equal;
+}
+
+bool tetris::operator!=(tetris const& rhs) const {
+	return !(*this == rhs);
+}
+
+bool tetris::containment(piece const& p, int x, int y) const {
+	bool contain = true;
+	uint32_t y_max = p.side();
+	uint32_t x_max = p.side();
+	uint32_t y_min = 0;
+	uint32_t x_min = 0;
+
+	for(uint32_t i = 0; i < p.side(); i++) {
+		for(uint32_t j = 0; j < p.side(); j++) {
+			if(p(i,j)) {
+				if(j>x_max) x_max = j;
+				if(j<x_min)	x_min = j;
+				if(i>y_max) y_max = i;
+				if(i<y_min)	y_min = i;
+			}
+		}
+	}
+
+	if(y_min < 0 || y_max > m_height) contain = false;
+	if(x <= (p.side() - x_max + m_height)) contain = false;
+	
+	std::cout<<"x_min = "<<x_min<<std::endl;
+	std::cout<<"x_max = "<<x_max<<std::endl;
+	std::cout<<"y_min = "<<y_min<<std::endl;
+	std::cout<<"y_max = "<<y_max<<std::endl;
+	std::cout<<"CONTAIN = "<<contain<<std::endl;
+	return contain;
+}
+//4 75 ((()[][][])[][](()[][][]))

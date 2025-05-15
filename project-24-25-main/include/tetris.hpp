@@ -48,7 +48,7 @@ private:
 std::istream& operator>>(std::istream& is, piece& p);
 std::ostream& operator<<(std::ostream& os, piece const& p);
 
-/*
+
 struct tetris_piece {
     piece p;
     int x;
@@ -74,7 +74,8 @@ public:
 
     bool operator==(tetris const& rhs) const;
     bool operator!=(tetris const& rhs) const;
-
+    bool containment(piece const& p, int x, int y) const;
+/*
     void insert(piece const& p, int x);
     void add(piece const& p, int x, int y);
 
@@ -126,14 +127,14 @@ public:
     uint32_t score() const;
     uint32_t width() const;
     uint32_t height() const;
-
+*/
 private:
     uint32_t m_score;
     uint32_t m_width;
     uint32_t m_height;
     node* m_field;
 };
-
+/*
 std::ostream& operator<<(std::ostream& os, tetris const& t);
 std::istream& operator>>(std::istream& is, tetris& t);
 */
