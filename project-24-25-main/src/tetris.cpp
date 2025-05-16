@@ -1,5 +1,4 @@
 #include "tetris.hpp"
-#include <string>
 
 //////////////
 /*	Piece	*/
@@ -564,30 +563,170 @@ bool tetris::operator!=(tetris const& rhs) const {
 
 bool tetris::containment(piece const& p, int x, int y) const {
 	bool contain = true;
-	uint32_t y_max = p.side();
-	uint32_t x_max = p.side();
-	uint32_t y_min = 0;
-	uint32_t x_min = 0;
+	int tmp_height = m_height;
+	int tmp_width = m_width;
 
-	for(uint32_t i = 0; i < p.side(); i++) {
-		for(uint32_t j = 0; j < p.side(); j++) {
-			if(p(i,j)) {
-				if(j>x_max) x_max = j;
-				if(j<x_min)	x_min = j;
-				if(i>y_max) y_max = i;
-				if(i<y_min)	y_min = i;
-			}
+	int offset_y = y - (m_height - 1);
+	int offset_x = x;
+
+	if(y < 0) contain = false;
+	bool a[m_height][m_width];
+
+	for(uint32_t i = 0; i < m_width; i++) {
+		for(uint32_t j = 0; j < m_height; j++) {
+			a[j][i] = false;
 		}
 	}
 
-	if(y_min < 0 || y_max > m_height) contain = false;
-	if(x <= (p.side() - x_max + m_height)) contain = false;
+	for(uint32_t i = 0; i < p.side(); i++) {
+		for(uint32_t j = 0; j < p.side(); j++) {
+			int py = offset_y + i;
+			int px = offset_x + j;
+			if (py >= 0 && py < tmp_height && px >= 0 && px < tmp_width){
+				a[py][px] = p(i,j);
+			} else {
+				if(p(i,j)) contain = false;
+			}
+		}
+	}
 	
-	std::cout<<"x_min = "<<x_min<<std::endl;
-	std::cout<<"x_max = "<<x_max<<std::endl;
-	std::cout<<"y_min = "<<y_min<<std::endl;
-	std::cout<<"y_max = "<<y_max<<std::endl;
-	std::cout<<"CONTAIN = "<<contain<<std::endl;
+	if(contain) {
+		node* pc = m_field;
+		while(pc) {
+			piece tmp = pc->tp.p;
+			bool b[m_height][m_width];
+			
+			for(uint32_t i = 0; i < m_width; i++) {
+				for(uint32_t j = 0; j < m_height; j++) {
+					b[j][i] = false;
+				}
+			}
+
+			for(uint32_t i = 0; i < tmp.side(); i++) {
+				for(uint32_t j = 0; j < tmp.side(); j++) {
+				int py = offset_y + i;
+				int px = offset_x + j;
+					if (py >= 0 && py < tmp_height && px >= 0 && px < tmp_width) {
+						b[py][px] = tmp(i,j);
+					}
+				}
+			}
+
+			for(uint32_t i = 0; i < m_width; i++) {
+				for(uint32_t j = 0; j < m_height; j++) {
+					if(a[j][i] && b[j][i]) contain = false;
+				}
+			}
+
+			pc = pc->next;
+		}
+		
+	}
 	return contain;
 }
-//4 75 ((()[][][])[][](()[][][]))
+
+void tetris::add(piece const& p, int x, int y) {
+	if(containment(p,x,y)) {
+		tetris_piece np{p,x,y};
+		node* new_piece = new node{np, nullptr};
+		node* tmp = m_field;
+		m_field = new_piece;
+		m_field->next = tmp;
+	} else {
+		throw tetris_exception{"Piece cannot be contained."};
+	}
+
+}
+
+void tetris::insert(piece const& p, int x) {
+	int y = 0;
+	bool contain = false;
+	while(!contain && y < m_height) {
+		contain = containment(p,x,y);
+		y++;
+	}
+
+	if(!contain) {throw tetris_exception("GAME OVER");}
+
+	add(p,x,y);
+
+	for(uint32_t i = 0; i < m_height; i++) {
+		bool cut = true;
+		for(uint32_t j = 0; j < m_width; j++) {
+			node* pc = m_field;
+			while(pc && cut) {
+				piece tmp = pc->tp.p;
+				int offset_y = pc->tp.y + 1 - tmp.side();
+				int offset_x = pc->tp.x;
+				uint32_t a = j - offset_x;
+				uint32_t b = i - offset_y;
+				if(a < tmp.side() && b < tmp.side()) {
+					if (!tmp(a,b)) {
+				   		cut = false;
+					} 
+				}
+				pc = pc->next;
+			}
+			if(cut) {
+				node* pc_cut = m_field;
+				while(pc_cut) {
+					piece tmp = pc_cut->tp.p;
+					tmp.cut_row(i);
+					pc_cut = pc_cut->next;
+				}
+				m_score += m_width;
+			}
+			
+		}
+
+	}
+
+
+}
+
+void tetris::print_ascii_art(std::ostream& os) const {
+	for(uint32_t i = 0; i < m_height; i++) {
+		for(uint32_t j = 0; j < m_width; j++) {
+			bool skip = false;
+			if(j == 0) os << '|';
+			node* pc = m_field;
+			while(pc && !skip) {
+				piece tmp = pc->tp.p;
+				int offset_y = pc->tp.y + 1 - tmp.side();
+				int offset_x = pc->tp.x;
+				uint32_t a = j - offset_x;
+				uint32_t b = i - offset_y;
+				if(a < tmp.side() && b < tmp.side()) {
+					if (tmp(a,b)) {
+				   		os << "\033[48;5;" << int(tmp.color()) << "m" << ' ' << "\033[m";
+						skip = true;
+					} 
+				}
+				pc = pc->next;
+			}
+			if(!skip) os << ' ';
+			if(j == m_width - 1) os << '|';
+		}
+		os << std::endl;
+	}
+	os << '_';
+	for(uint32_t i = 0; i < m_height; i++) {
+		os << '_';
+	}
+	os << '_';
+	os << std::endl;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

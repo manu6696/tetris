@@ -74,15 +74,14 @@ public:
 
     bool operator==(tetris const& rhs) const;
     bool operator!=(tetris const& rhs) const;
-    bool containment(piece const& p, int x, int y) const;
-/*
+
     void insert(piece const& p, int x);
     void add(piece const& p, int x, int y);
 
     bool containment(piece const& p, int x, int y) const;
-
+    
     void print_ascii_art(std::ostream& os) const;
-
+/*
     struct iterator {
         using iterator_category = std::forward_iterator_tag;
         using value_type = tetris_piece;
