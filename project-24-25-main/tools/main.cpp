@@ -1,24 +1,39 @@
 #include"tetris.hpp"
+#include <fstream>
 
-int main () {
-	piece p;
-	piece h;
-	tetris s (4,4,0);
+int main (int argc, char** argv) {
+
+	//4 76 (([][][]()) [] [] [] )
+	//4 88 (([]()()[]) [] [] [] )
+	//4 88 ((()()()[]) [] [] [] )
+	//4 22 ([][]()())
+	//4 66 ([][]()())
+	//4 77 ([][]()())
+	//4 22 ([][][]([][][]()))
+
+	if (argc < 2) {
+        std::cout << "Usage: " << argv[0] << " input_filename" << std::endl;
+        return 1;
+    }
+
+    std::ifstream is(argv[1]);
+    if (!is.good()) {
+        std::cerr << "file not found; something is wrong!" << std::endl;
+        return 1;
+    }
+
 	try{
-		std::cin >> p;
-		std::cin >> h;
-		s.add(p,0,3);
-		s.add(h,0,3);
+		tetris s;
+		is >> s;
+		s.print_ascii_art(std::cout);
+		std::cout<<std::endl;
+		std::cout << s;
+		
 	} catch (tetris_exception const& e) {
 		std::cout<<e.what()<<std::endl;
 		return 1;
 	}
 	
-	s.print_ascii_art(std::cout);
 	return 0;
 }
 
-//4 75 ((()[][][]) [] [] [] )
-//4 88 (([]()()[]) [] [] [] )
-
-//4 88 ((()()()[]) [] [] [] )

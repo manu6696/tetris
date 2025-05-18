@@ -10,8 +10,8 @@ sanitizers: build/main
 build/main: src/tetris.cpp include/tetris.hpp tools/main.cpp
 	g++ ${OPTIONS} tools/main.cpp src/tetris.cpp -I include -o build/main
 
-valgrind: build/main
-	valgrind --track-origins=yes --leak-check=full build/main
+valgrind: build/main datasets/prova.txt
+	valgrind --track-origins=yes --leak-check=full build/main datasets/prova.txt
 
 clean:
 	rm -rf build/*

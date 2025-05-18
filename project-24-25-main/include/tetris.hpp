@@ -81,7 +81,7 @@ public:
     bool containment(piece const& p, int x, int y) const;
     
     void print_ascii_art(std::ostream& os) const;
-/*
+
     struct iterator {
         using iterator_category = std::forward_iterator_tag;
         using value_type = tetris_piece;
@@ -92,7 +92,7 @@ public:
         reference operator*();
         pointer operator->();
         iterator& operator++();
-        iterator operator++(int /*dummy);                 /// ricordarsi
+        iterator operator++(int /*dummy*/);
         bool operator==(iterator const& rhs) const;
         bool operator!=(iterator const& rhs) const;
 
@@ -110,7 +110,7 @@ public:
         reference operator*() const;
         pointer operator->() const;
         const_iterator& operator++();
-        const_iterator operator++(int /*dummy);                 /// ricordarsi
+        const_iterator operator++(int /*dummy*/);
         bool operator==(const_iterator const& rhs) const;
         bool operator!=(const_iterator const& rhs) const;
 
@@ -126,14 +126,13 @@ public:
     uint32_t score() const;
     uint32_t width() const;
     uint32_t height() const;
-*/
+
 private:
     uint32_t m_score;
     uint32_t m_width;
     uint32_t m_height;
     node* m_field;
 };
-/*
+
 std::ostream& operator<<(std::ostream& os, tetris const& t);
 std::istream& operator>>(std::istream& is, tetris& t);
-*/
