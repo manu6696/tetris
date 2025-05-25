@@ -6,7 +6,7 @@
 
 piece::piece() : m_side(0), m_color(0), m_grid(nullptr) {}
 
-piece::piece(uint32_t s, uint8_t c) : piece() {
+piece::piece(uint32_t s, uint8_t c) : m_side(0), m_color(0), m_grid(nullptr)  {
 	if(c == 0 ) throw tetris_exception("Color not valid.");
 	bool power_of = false;
 	uint32_t i = 1;
@@ -21,6 +21,11 @@ piece::piece(uint32_t s, uint8_t c) : piece() {
 	m_color = c;
 	m_grid = new bool*[m_side];
 	for(uint32_t i = 0; i < m_side; i++) m_grid[i] = new bool[m_side];
+
+	for(uint32_t i = 0; i < m_side; i++) {
+		for(uint32_t j = 0; j < m_side; j++)
+			m_grid[i][j] = false;
+	}
 }
 
 piece::piece(piece const& rhs) : piece(rhs.m_side, rhs.m_color) {
@@ -103,7 +108,10 @@ bool piece::operator()(uint32_t i, uint32_t j) const {
 }
 
 bool piece::empty(uint32_t i, uint32_t j, uint32_t s) const {
-	if(i >= s || j >= s) throw tetris_exception("Out of bound access.");
+	if(i >= m_side || j >= m_side || s >= m_side) 
+		throw tetris_exception("Out of bound access.");
+	if(i >= s) i = 0; 
+	if(j >= s) j = 0;
 	bool res = true;
 	for(uint32_t a = i; a < s; a++) {
 		for(uint32_t b = j; b < s; b++) {
@@ -114,13 +122,17 @@ bool piece::empty(uint32_t i, uint32_t j, uint32_t s) const {
 }
 
 bool piece::full(uint32_t i, uint32_t j, uint32_t s) const {
-	if(i >= s || j >= s) throw tetris_exception("Out of bound access.");
 	bool res = true;
-	for(uint32_t a = i; a < s; a++) {
-		for(uint32_t b = j; b < s; b++) {
-			if(!m_grid[a][b]) res = false;
+	if(m_side > 0 && i < m_side && j < m_side && s > 0 && s <= m_side) {
+		for(uint32_t a = i; a < s; a++) { 
+			for(uint32_t b = j; b < s; b++) {
+				if(!m_grid[a][b]) res = false;
+			}
 		}
+	} else {
+		res = false;
 	}
+	
 	return res;
 }
 
@@ -151,7 +163,7 @@ bool piece::full() const {
 }
 
 void piece::rotate() {
-	if(m_side > 0) {
+	if(!empty() && m_side > 0) {
 		bool t_grid[m_side][m_side];
 		for(uint32_t i = 0; i < m_side; i++) {
 			for(uint32_t j = 0; j < m_side; j++) {
@@ -167,13 +179,15 @@ void piece::rotate() {
 }
 
 void piece::cut_row(uint32_t i) {
-	assert(i < m_side);
-	for(uint32_t j = i ; j > 0; j--) {
-		for(uint32_t k = 0; k < m_side; k++) {
-			m_grid[j][k] = m_grid[j-1][k];
+	if(!empty() && i < m_side) {
+		for(uint32_t j = i ; j > 0; j--) {
+			for(uint32_t k = 0; k < m_side; k++) {
+				m_grid[j][k] = m_grid[j-1][k];
+			}
 		}
+		for(uint32_t j = 0; j < m_side; j++) m_grid[0][j] = false;
 	}
-	for(uint32_t j = 0; j < m_side; j++) m_grid[0][j] = false;
+	
 }
 
 void piece::print_ascii_art(std::ostream& os) const {
@@ -281,16 +295,19 @@ piece QUAD(std::istream& is, uint32_t side, uint8_t color) {
 	skip(is);
 	char c = 0;
     is >> c;
+    char opening_char = c;
     skip(is);
-    if(c != '(' && c != '[' && c != ')' && c != ']') { throw tetris_exception("Invalid character."); }
     char c_next = is.peek();
     if(c != '(' && c != '[' && c != ')' && c != ']') { throw tetris_exception("Invalid character."); }
     if(c_next != '(' && c_next != '[' && c_next != ')' && c_next != ']') { throw tetris_exception("Invalid character."); }
     if(c_next == ')' || c_next == ']') {
+    	if((opening_char=='(' && c_next !=')') || (opening_char=='[' && c_next !=']')) 
+			{ throw tetris_exception("Parentheses mismatch or invalid character"); }
     	is >> c;
     }
 
 	if (c == '(' || c == '[') {
+		opening_char = c;
 		tl = QUAD(is, side/2, color);
 		tr = QUAD(is, side/2, color);
 		bl = QUAD(is, side/2, color);
@@ -322,7 +339,8 @@ piece QUAD(std::istream& is, uint32_t side, uint8_t color) {
 
 		skip(is);
 		is >> c;
-		if(c != ')') { throw tetris_exception("Missing ')' or ']'"); }
+		if((opening_char=='(' && c !=')') || (opening_char=='[' && c !=']')) 
+			{ throw tetris_exception("Parentheses mismatch or invalid character"); }
 	} else if (c == ']') {
 		set_false(p);
 	} else if (c == ')') {
@@ -436,7 +454,7 @@ std::ostream& operator<<(std::ostream& os, piece const& p) {
 
 tetris::tetris() : m_score(0), m_width(0), m_height(0), m_field(nullptr) {}
 
-tetris::tetris(uint32_t w, uint32_t h, uint32_t s) : tetris() {
+tetris::tetris(uint32_t w, uint32_t h, uint32_t s) : m_score(0), m_width(0), m_height(0), m_field(nullptr) {
 	if(w == 0 || h == 0) {
 		throw tetris_exception("Game board dimension can't be equal to 0.");
 	}
@@ -445,14 +463,14 @@ tetris::tetris(uint32_t w, uint32_t h, uint32_t s) : tetris() {
 	m_score = s;
 }
 
-tetris::tetris(tetris const& rhs) {
+tetris::tetris(tetris const& rhs) : m_score(0), m_width(0), m_height(0), m_field(nullptr) {
 	m_width = rhs.m_width;
 	m_height = rhs.m_height;
 	m_score = rhs.m_score;
+	m_field = nullptr;
 
 	node* pc = rhs.m_field;
-	m_field = nullptr;
-	node* tail = m_field;
+	node* tail = nullptr;
 	while(pc) {
 		node* n = new node{pc->tp, nullptr};
 		if(m_field == nullptr) {
@@ -465,7 +483,7 @@ tetris::tetris(tetris const& rhs) {
 	}
 }
 
-tetris::tetris(tetris&& rhs) {
+tetris::tetris(tetris&& rhs) : m_score(0), m_width(0), m_height(0), m_field(nullptr) {
 	*this = std::move(rhs);
 }
 
@@ -566,9 +584,9 @@ bool tetris::containment(piece const& p, int x, int y) const {
 	if(y < 0) contain = false;
 	bool a[m_height][m_width];
 
-	for(uint32_t i = 0; i < m_width; i++) {
-		for(uint32_t j = 0; j < m_height; j++) {
-			a[j][i] = false;
+	for(uint32_t i = 0; i < m_height; i++) {
+		for(uint32_t j = 0; j < m_width; j++) {
+			a[i][j] = false;
 		}
 	}
 
@@ -579,7 +597,9 @@ bool tetris::containment(piece const& p, int x, int y) const {
 			if (py >= 0 && py < tmp_height && px >= 0 && px < tmp_width){
 				a[py][px] = p(i,j);
 			} else {
-				if(p(i,j)) contain = false;
+				if(p(i,j)) {
+					contain = false;
+				}
 			}
 		}
 	}
@@ -591,9 +611,9 @@ bool tetris::containment(piece const& p, int x, int y) const {
 			bool b[m_height][m_width];
 			int offset_tmp_y = pc->tp.y + 1 - tmp.side();
 			int offset_tmp_x = pc->tp.x;
-			for(uint32_t i = 0; i < m_width; i++) {
-				for(uint32_t j = 0; j < m_height; j++) {
-					b[j][i] = false;
+			for(uint32_t i = 0; i < m_height; i++) {
+				for(uint32_t j = 0; j < m_width; j++) {
+					b[i][j] = false;
 				}
 			}
 
@@ -607,9 +627,9 @@ bool tetris::containment(piece const& p, int x, int y) const {
 				}
 			}
 
-			for(uint32_t i = 0; i < m_width; i++) {
-				for(uint32_t j = 0; j < m_height; j++) {
-					if(a[j][i] && b[j][i]) {
+			for(uint32_t i = 0; i < m_height; i++) {
+				for(uint32_t j = 0; j < m_width; j++) {
+					if(a[i][j] && b[i][j]) {
 						contain = false;
 					}
 				}
@@ -645,11 +665,17 @@ void tetris::insert(piece const& p, int x) {
     }
     uint32_t y_calc = 0;
     uint32_t max_y = m_height - 1 + (p.side() - 1 - y_max);
-    for (uint32_t y = 0; y <= max_y; ++y) {
+    uint32_t y = p.side() - 1;
+    bool max_reach = false;
+    while(y <= max_y && !max_reach) {
         if (containment(p, x, y)) {
             y_calc = y;
+        } else {
+        	max_reach = true;
         }
+        ++y;
     }
+
     if (!containment(p, x, y_calc)) {
         throw tetris_exception("GAME OVER");
     }
@@ -847,6 +873,7 @@ std::ostream& operator<<(std::ostream& os, tetris const& t) {
 }
 
 void READ_PIECES(std::istream& is, tetris& t) {
+	skip(is);
 	char c = is.peek();
 	if(c >= '0' and c <= '9') {
 		piece p = PIECE(is);
@@ -856,19 +883,33 @@ void READ_PIECES(std::istream& is, tetris& t) {
 		skip(is);
 		c = is.peek();
 		if(c == '-' or (c >= '0' and c <= '9')) is >> x;
+		else throw tetris_exception("Invalid piece X coordinate.");
 
 		skip(is);
 		c=is.peek();
 		if(c == '-' or (c >= '0' and c <= '9')) is >> y;
+		else throw tetris_exception("Invalid piece Y coordinate.");
 		t.add(p,x,y);
 
+		/*
+		skip(is);
+		c = is.peek();
 		while(!is.eof() && c != '\n') {
 			is.get(c);
 		}
 		c = is.peek();
+		*/
+
+		skip(is);
+		c = is.peek();
+		READ_PIECES(is, t);
+		/*
 		if(c >= '0' and c <= '9') {
 			READ_PIECES(is, t);
-		}
+		} 
+		*/
+	} else if(c > 0){
+		throw tetris_exception("Invalid piece format.");
 	}
 }
 
@@ -884,6 +925,8 @@ tetris TETRIS(std::istream& is) {
 		double x = 0.0;
 		is >> x;
 		score = x;
+	} else {
+		throw tetris_exception("Invalid score.");
 	}
 
 	skip(is);
@@ -893,6 +936,8 @@ tetris TETRIS(std::istream& is) {
 		double x = 0.0;
 		is >> x;
 		width = x;
+	} else {
+		throw tetris_exception("Invalid width.");
 	}
 
 	skip(is);
@@ -902,6 +947,8 @@ tetris TETRIS(std::istream& is) {
 		double x = 0.0;
 		is >> x;
 		height = x;
+	} else {
+		throw tetris_exception("Invalid height.");
 	}
 
 	tetris s (width,height,score);
@@ -910,6 +957,8 @@ tetris TETRIS(std::istream& is) {
 
 	if(c >= '0' and c <= '9') {
 		READ_PIECES(is, s);
+	} else {
+		throw tetris_exception("Invalid piece side.");
 	}
 
 	return s;

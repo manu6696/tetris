@@ -1,0 +1,18 @@
+
+Note: Our tests are split into several executables, in order to reduce
+the impact of compilation errors or unexpected terminations of your code.
+For this reason, in this file you will find many valgrind ERROR SUMMARY: ... lines
+All of which must continue with '0 errors from 0 contexts (suppressed: 0 from 0)'.
+If there are compilation errors (they appear immediately below this comment,
+before the valgrind output), look for the place where
+your file tetris.cpp is mentioned.
+
+WARNING: If compilation errors appear here, some tests have not been
+run and have not produced any output in results.txt! It is therefore crucial
+that there are no compilation errors first.
+
+NOTE: all codes containing any of the words cout, cerr, clog, printf,
+puts (even in comments) are ignored. Feel free to use them for your tests, but remember
+to remove them before submitting. Anyone who tries to circumvent this filter by printing
+the test cases in another way will have to repeat the project next year.
+

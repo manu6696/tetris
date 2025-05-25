@@ -1,0 +1,10 @@
+
+Note: If any test cases are not in SUCCESS state, the name of the failed test
+should give you an idea of what to check in your code.
+Write new, thorough tests based on the failed tests.
+A whole battery of tests can fail if there are compilation errors or segmentation 
+faults. If some test cases are marked as SKIPPED, there is probably a 
+segmentation fault. Also check the log.txt file for more
+details about compilation errors and unexpected program terminations.
+
+
