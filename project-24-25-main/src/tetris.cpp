@@ -108,13 +108,11 @@ bool piece::operator()(uint32_t i, uint32_t j) const {
 }
 
 bool piece::empty(uint32_t i, uint32_t j, uint32_t s) const {
-	if(i >= m_side || j >= m_side || s >= m_side) 
+	if(i >= m_side || j >= m_side || i + s > m_side || j + s > m_side) 
 		throw tetris_exception("Out of bound access.");
-	if(i >= s) i = 0; 
-	if(j >= s) j = 0;
 	bool res = true;
-	for(uint32_t a = i; a < s; a++) {
-		for(uint32_t b = j; b < s; b++) {
+	for(uint32_t a = i; a < s + i; a++) {
+		for(uint32_t b = j; b < s + j; b++) {
 			if(m_grid[a][b]) res = false;
 		}
 	}
@@ -123,9 +121,9 @@ bool piece::empty(uint32_t i, uint32_t j, uint32_t s) const {
 
 bool piece::full(uint32_t i, uint32_t j, uint32_t s) const {
 	bool res = true;
-	if(m_side > 0 && i < m_side && j < m_side && s > 0 && s <= m_side) {
-		for(uint32_t a = i; a < s; a++) { 
-			for(uint32_t b = j; b < s; b++) {
+	if(m_side > 0 && i + s <= m_side && j + s <= m_side && s > 0) {
+		for(uint32_t a = i; a < s + i; a++) { 
+			for(uint32_t b = j; b < s + j; b++) {
 				if(!m_grid[a][b]) res = false;
 			}
 		}
@@ -179,6 +177,7 @@ void piece::rotate() {
 }
 
 void piece::cut_row(uint32_t i) {
+	if(i >= m_side) throw tetris_exception("Wrong value for i.");
 	if(!empty() && i < m_side) {
 		for(uint32_t j = i ; j > 0; j--) {
 			for(uint32_t k = 0; k < m_side; k++) {
@@ -276,6 +275,10 @@ piece PIECE(std::istream& is) {
 	c = is.peek();
 	if (c == '(' || c == '[') {
 		p = QUAD(is, side, color);
+		skip(is);
+		char h = is.peek();
+		if((h >= '!' && h <= '0' && h != '-')|| h > '9')
+			throw tetris_exception("Parentheses mismatch or invalid character.");
 	} else {
 		throw tetris_exception("Expected '(' or '['");
 	}
@@ -298,16 +301,19 @@ piece QUAD(std::istream& is, uint32_t side, uint8_t color) {
     char opening_char = c;
     skip(is);
     char c_next = is.peek();
-    if(c != '(' && c != '[' && c != ')' && c != ']') { throw tetris_exception("Invalid character."); }
+    if(c != '(' && c != '[' && c != ')' && c != ']') {
+    	throw tetris_exception("Invalid character."); 
+    }
     if(c_next != '(' && c_next != '[' && c_next != ')' && c_next != ']') { throw tetris_exception("Invalid character."); }
     if(c_next == ')' || c_next == ']') {
     	if((opening_char=='(' && c_next !=')') || (opening_char=='[' && c_next !=']')) 
-			{ throw tetris_exception("Parentheses mismatch or invalid character"); }
+			{ throw tetris_exception("Parentheses mismatch or invalid character."); }
     	is >> c;
     }
 
 	if (c == '(' || c == '[') {
 		opening_char = c;
+		if(side <= 1) throw tetris_exception("Parentheses mismatch or invalid character.");
 		tl = QUAD(is, side/2, color);
 		tr = QUAD(is, side/2, color);
 		bl = QUAD(is, side/2, color);
@@ -340,7 +346,7 @@ piece QUAD(std::istream& is, uint32_t side, uint8_t color) {
 		skip(is);
 		is >> c;
 		if((opening_char=='(' && c !=')') || (opening_char=='[' && c !=']')) 
-			{ throw tetris_exception("Parentheses mismatch or invalid character"); }
+			{ throw tetris_exception("Parentheses mismatch or invalid character."); }
 	} else if (c == ']') {
 		set_false(p);
 	} else if (c == ')') {
@@ -656,16 +662,16 @@ void tetris::add(piece const& p, int x, int y) {
 
 void tetris::insert(piece const& p, int x) {
     uint32_t y_max = 0;
+    uint32_t y_min = p.side() - 1;
     for (uint32_t i = 0; i < p.side(); ++i) {
         for (uint32_t j = 0; j < p.side(); ++j) {
-            if (p(i, j) && i > y_max) {
-                y_max = i;
-            }
+            if (p(i, j) && i > y_max) y_max = i;
+            if(p(i, j) && i < y_min) y_min = i;
         }
     }
     uint32_t y_calc = 0;
     uint32_t max_y = m_height - 1 + (p.side() - 1 - y_max);
-    uint32_t y = p.side() - 1;
+    uint32_t y = (m_height - 1) - (m_height - p.side() + y_min);
     bool max_reach = false;
     while(y <= max_y && !max_reach) {
         if (containment(p, x, y)) {
@@ -675,13 +681,14 @@ void tetris::insert(piece const& p, int x) {
         }
         ++y;
     }
-
+    
     if (!containment(p, x, y_calc)) {
         throw tetris_exception("GAME OVER");
     }
 
     add(p, x, y_calc);
 
+    
     for (int i = m_height - 1; i >= 0; --i) {
         bool full = true;
         for (uint32_t j = 0; j < m_width; ++j) {
@@ -738,6 +745,7 @@ void tetris::insert(piece const& p, int x) {
             i++;
         }
     }
+
 }
 
 void tetris::print_ascii_art(std::ostream& os) const {

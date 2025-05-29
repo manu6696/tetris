@@ -1,0 +1,32 @@
+
+Note: If any test cases are not in SUCCESS state, the name of the failed test
+should give you an idea of what to check in your code.
+Write new, thorough tests based on the failed tests.
+A whole battery of tests can fail if there are compilation errors or segmentation 
+faults. If some test cases are marked as SKIPPED, there is probably a 
+segmentation fault. Also check the log.txt file for more
+details about compilation errors and unexpected program terminations.
+
+
+
+
+**** running test: test_tetris_invalid ****
+
+[doctest] doctest version is "2.4.12"
+[doctest] run with "--help" for options
+===============================================================================
+../test/test_tetris_invalid.cpp:58:
+TEST CASE:  invalid tetris D
+
+../test/test_tetris_invalid.cpp:68: FATAL ERROR: REQUIRE( thrown == true ) is NOT correct!
+  values: REQUIRE( false == true )
+  logged: ERROR --> exception not thrown in tetris::operator>> while reading invalid file format
+
+===============================================================================
+[doctest] test cases: 5 | 4 passed | 1 failed | 0 skipped
+[doctest] assertions: 5 | 4 passed | 1 failed |
+[doctest] Status: FAILURE!
+
+
+
+
