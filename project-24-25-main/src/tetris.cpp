@@ -275,10 +275,6 @@ piece PIECE(std::istream& is) {
 	c = is.peek();
 	if (c == '(' || c == '[') {
 		p = QUAD(is, side, color);
-		skip(is);
-		char h = is.peek();
-		if((h >= '!' && h <= '0' && h != '-')|| h > '9')
-			throw tetris_exception("Parentheses mismatch or invalid character.");
 	} else {
 		throw tetris_exception("Expected '(' or '['");
 	}
@@ -304,7 +300,10 @@ piece QUAD(std::istream& is, uint32_t side, uint8_t color) {
     if(c != '(' && c != '[' && c != ')' && c != ']') {
     	throw tetris_exception("Invalid character."); 
     }
-    if(c_next != '(' && c_next != '[' && c_next != ')' && c_next != ']') { throw tetris_exception("Invalid character."); }
+    if(opening_char == '[' && c_next != '[' && c_next != ']') 
+    	{ throw tetris_exception("Parentheses mismatch or invalid character."); }
+    if(c_next != '(' && c_next != '[' && c_next != ')' && c_next != ']') 
+    	{ throw tetris_exception("Invalid character."); }
     if(c_next == ')' || c_next == ']') {
     	if((opening_char=='(' && c_next !=')') || (opening_char=='[' && c_next !=']')) 
 			{ throw tetris_exception("Parentheses mismatch or invalid character."); }
@@ -909,8 +908,16 @@ void READ_PIECES(std::istream& is, tetris& t) {
 		*/
 
 		skip(is);
+		char h = is.peek();
+		if((h >= '!' && h < '0' && h != '-')|| (h > '9')){
+			throw tetris_exception("Parentheses mismatch or invalid character.");
+		}
+
+		skip(is);
 		c = is.peek();
 		READ_PIECES(is, t);
+
+
 		/*
 		if(c >= '0' and c <= '9') {
 			READ_PIECES(is, t);

@@ -19,6 +19,7 @@ int main (int argc, char** argv) {
 	//8 249 ([][]([][]([][]()())([][]()()))([][]([][]()())([][]()())))
 	//2 5 ([]()[]())
 
+	
 	if (argc < 2) {
         std::cout << "Usage: " << argv[0] << " input_filename" << std::endl;
         return 1;
@@ -35,19 +36,34 @@ int main (int argc, char** argv) {
 
 		/*
 		tetris t(8,6,0);
+		
 		while(true) {
 			piece p1;
-			std::cin >> p1;
+			std::cin>> p1;
 			int x = 0;
 			std::cin >> x;
 			t.insert(p1, x);
 			t.print_ascii_art(std::cout);
 		}
 		*/
+		
 		tetris s;
 		is >> s;
 		s.print_ascii_art(std::cout);
 		std::cout << s;
+		
+		/*
+		while(true){
+				piece p;
+				std::cin>>p;
+				std::cout<<p;
+				std::cout<<std::endl;
+				p.print_ascii_art(std::cout);
+				std::cout<<std::endl;
+				}
+				*/
+		//p.print_ascii_art(std::cout);
+		//std::cout<<p;
 		/*
 		
 		tetris s;
