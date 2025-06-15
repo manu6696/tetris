@@ -1,0 +1,258 @@
+
+Note: Our tests are split into several executables, in order to reduce
+the impact of compilation errors or unexpected terminations of your code.
+For this reason, in this file you will find many valgrind ERROR SUMMARY: ... lines
+All of which must continue with '0 errors from 0 contexts (suppressed: 0 from 0)'.
+If there are compilation errors (they appear immediately below this comment,
+before the valgrind output), look for the place where
+your file tetris.cpp is mentioned.
+
+WARNING: If compilation errors appear here, some tests have not been
+run and have not produced any output in results.txt! It is therefore crucial
+that there are no compilation errors first.
+
+NOTE: all codes containing any of the words cout, cerr, clog, printf,
+puts (even in comments) are ignored. Feel free to use them for your tests, but remember
+to remove them before submitting. Anyone who tries to circumvent this filter by printing
+the test cases in another way will have to repeat the project next year.
+
+==11005== Memcheck, a memory error detector
+==11005== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11005== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==11005== Command: ../projects/06-06-25/901771/test_empty_full_rotate_cut_row.out
+==11005== 
+==11005== 
+==11005== HEAP SUMMARY:
+==11005==     in use at exit: 0 bytes in 0 blocks
+==11005==   total heap usage: 129 allocs, 129 frees, 120,745 bytes allocated
+==11005== 
+==11005== All heap blocks were freed -- no leaks are possible
+==11005== 
+==11005== For counts of detected and suppressed errors, rerun with: -v
+==11005== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+==11009== Memcheck, a memory error detector
+==11009== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11009== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==11009== Command: ../projects/06-06-25/901771/test_piece_constructor.out
+==11009== 
+==11009== 
+==11009== HEAP SUMMARY:
+==11009==     in use at exit: 0 bytes in 0 blocks
+==11009==   total heap usage: 42 allocs, 42 frees, 117,728 bytes allocated
+==11009== 
+==11009== All heap blocks were freed -- no leaks are possible
+==11009== 
+==11009== For counts of detected and suppressed errors, rerun with: -v
+==11009== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+==11013== Memcheck, a memory error detector
+==11013== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11013== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==11013== Command: ../projects/06-06-25/901771/test_piece_copy.out
+==11013== 
+==11013== 
+==11013== HEAP SUMMARY:
+==11013==     in use at exit: 0 bytes in 0 blocks
+==11013==   total heap usage: 26 allocs, 26 frees, 116,444 bytes allocated
+==11013== 
+==11013== All heap blocks were freed -- no leaks are possible
+==11013== 
+==11013== For counts of detected and suppressed errors, rerun with: -v
+==11013== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+==11017== Memcheck, a memory error detector
+==11017== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11017== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==11017== Command: ../projects/06-06-25/901771/test_piece_invalid.out
+==11017== 
+==11017== 
+==11017== HEAP SUMMARY:
+==11017==     in use at exit: 0 bytes in 0 blocks
+==11017==   total heap usage: 913 allocs, 913 frees, 215,292 bytes allocated
+==11017== 
+==11017== All heap blocks were freed -- no leaks are possible
+==11017== 
+==11017== For counts of detected and suppressed errors, rerun with: -v
+==11017== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+==11021== Memcheck, a memory error detector
+==11021== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11021== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==11021== Command: ../projects/06-06-25/901771/test_piece_move.out
+==11021== 
+==11021== 
+==11021== HEAP SUMMARY:
+==11021==     in use at exit: 0 bytes in 0 blocks
+==11021==   total heap usage: 26 allocs, 26 frees, 116,204 bytes allocated
+==11021== 
+==11021== All heap blocks were freed -- no leaks are possible
+==11021== 
+==11021== For counts of detected and suppressed errors, rerun with: -v
+==11021== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+==11025== Memcheck, a memory error detector
+==11025== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11025== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==11025== Command: ../projects/06-06-25/901771/test_piece_streams.out
+==11025== 
+==11025== 
+==11025== HEAP SUMMARY:
+==11025==     in use at exit: 0 bytes in 0 blocks
+==11025==   total heap usage: 2,791 allocs, 2,791 frees, 156,514 bytes allocated
+==11025== 
+==11025== All heap blocks were freed -- no leaks are possible
+==11025== 
+==11025== For counts of detected and suppressed errors, rerun with: -v
+==11025== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+==11029== Memcheck, a memory error detector
+==11029== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11029== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==11029== Command: ../projects/06-06-25/901771/test_play_games.out
+==11029== 
+==11029== 
+==11029== HEAP SUMMARY:
+==11029==     in use at exit: 0 bytes in 0 blocks
+==11029==   total heap usage: 42,448 allocs, 42,448 frees, 622,533 bytes allocated
+==11029== 
+==11029== All heap blocks were freed -- no leaks are possible
+==11029== 
+==11029== For counts of detected and suppressed errors, rerun with: -v
+==11029== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+==11033== Memcheck, a memory error detector
+==11033== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11033== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==11033== Command: ../projects/06-06-25/901771/test_tetris_constructor.out
+==11033== 
+==11033== 
+==11033== HEAP SUMMARY:
+==11033==     in use at exit: 0 bytes in 0 blocks
+==11033==   total heap usage: 43 allocs, 43 frees, 118,092 bytes allocated
+==11033== 
+==11033== All heap blocks were freed -- no leaks are possible
+==11033== 
+==11033== For counts of detected and suppressed errors, rerun with: -v
+==11033== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+==11037== Memcheck, a memory error detector
+==11037== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11037== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==11037== Command: ../projects/06-06-25/901771/test_tetris_containment.out
+==11037== 
+==11037== 
+==11037== HEAP SUMMARY:
+==11037==     in use at exit: 0 bytes in 0 blocks
+==11037==   total heap usage: 7,040 allocs, 7,040 frees, 201,569 bytes allocated
+==11037== 
+==11037== All heap blocks were freed -- no leaks are possible
+==11037== 
+==11037== For counts of detected and suppressed errors, rerun with: -v
+==11037== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+==11041== Memcheck, a memory error detector
+==11041== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11041== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==11041== Command: ../projects/06-06-25/901771/test_tetris_copy.out
+==11041== 
+==11041== 
+==11041== HEAP SUMMARY:
+==11041==     in use at exit: 0 bytes in 0 blocks
+==11041==   total heap usage: 9,938 allocs, 9,938 frees, 234,900 bytes allocated
+==11041== 
+==11041== All heap blocks were freed -- no leaks are possible
+==11041== 
+==11041== For counts of detected and suppressed errors, rerun with: -v
+==11041== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+==11045== Memcheck, a memory error detector
+==11045== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11045== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==11045== Command: ../projects/06-06-25/901771/test_tetris_invalid.out
+==11045== 
+==11045== 
+==11045== HEAP SUMMARY:
+==11045==     in use at exit: 0 bytes in 0 blocks
+==11045==   total heap usage: 2,330 allocs, 2,330 frees, 190,424 bytes allocated
+==11045== 
+==11045== All heap blocks were freed -- no leaks are possible
+==11045== 
+==11045== For counts of detected and suppressed errors, rerun with: -v
+==11045== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+==11049== Memcheck, a memory error detector
+==11049== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11049== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==11049== Command: ../projects/06-06-25/901771/test_tetris_iterators.out
+==11049== 
+==11049== 
+==11049== HEAP SUMMARY:
+==11049==     in use at exit: 0 bytes in 0 blocks
+==11049==   total heap usage: 14,260 allocs, 14,260 frees, 286,923 bytes allocated
+==11049== 
+==11049== All heap blocks were freed -- no leaks are possible
+==11049== 
+==11049== For counts of detected and suppressed errors, rerun with: -v
+==11049== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+==11053== Memcheck, a memory error detector
+==11053== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11053== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==11053== Command: ../projects/06-06-25/901771/test_tetris_move.out
+==11053== 
+==11053== 
+==11053== HEAP SUMMARY:
+==11053==     in use at exit: 0 bytes in 0 blocks
+==11053==   total heap usage: 17,605 allocs, 17,605 frees, 333,775 bytes allocated
+==11053== 
+==11053== All heap blocks were freed -- no leaks are possible
+==11053== 
+==11053== For counts of detected and suppressed errors, rerun with: -v
+==11053== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+==11057== Memcheck, a memory error detector
+==11057== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11057== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==11057== Command: ../projects/06-06-25/901771/test_tetris_read.out
+==11057== 
+==11057== 
+==11057== HEAP SUMMARY:
+==11057==     in use at exit: 0 bytes in 0 blocks
+==11057==   total heap usage: 3,008 allocs, 3,008 frees, 193,719 bytes allocated
+==11057== 
+==11057== All heap blocks were freed -- no leaks are possible
+==11057== 
+==11057== For counts of detected and suppressed errors, rerun with: -v
+==11057== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+
+==11061== Memcheck, a memory error detector
+==11061== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==11061== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==11061== Command: ../projects/06-06-25/901771/test_tetris_read_write.out
+==11061== 
+==11061== 
+==11061== HEAP SUMMARY:
+==11061==     in use at exit: 0 bytes in 0 blocks
+==11061==   total heap usage: 6,708 allocs, 6,708 frees, 227,456 bytes allocated
+==11061== 
+==11061== All heap blocks were freed -- no leaks are possible
+==11061== 
+==11061== For counts of detected and suppressed errors, rerun with: -v
+==11061== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+

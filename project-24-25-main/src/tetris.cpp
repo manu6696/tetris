@@ -252,16 +252,16 @@ piece PIECE(std::istream& is) {
 
 	char c = is.peek();
 	if(c >= '0' and c <= '9') {
-		double x = 0.0;
+		uint32_t x = 0;
 		is >> x;
 		side = x;
 		skip(is);
 		char c = is.peek();
 		if(c >= '0' and c <= '9') {
-			double y = 0.0;
+			int y = 0;
 			is >> y;
 			color = y;
-			skip(is);	
+			skip(is);
 		} else {
 			throw tetris_exception("Invalid color.");
 		}
@@ -273,10 +273,11 @@ piece PIECE(std::istream& is) {
 
 	skip(is);
 	c = is.peek();
-	if (c == '(' || c == '[') {
+	if (c == '(') {
+		//|| c == '['
 		p = QUAD(is, side, color);
 	} else {
-		throw tetris_exception("Expected '(' or '['");
+		throw tetris_exception("Expected '('");
 	}
 	return p;
 }
@@ -300,7 +301,7 @@ piece QUAD(std::istream& is, uint32_t side, uint8_t color) {
     if(c != '(' && c != '[' && c != ')' && c != ']') {
     	throw tetris_exception("Invalid character."); 
     }
-    if(opening_char == '[' && c_next != '[' && c_next != ']') 
+    if(opening_char == '[' && c_next != ']') 
     	{ throw tetris_exception("Parentheses mismatch or invalid character."); }
     if(c_next != '(' && c_next != '[' && c_next != ')' && c_next != ']') 
     	{ throw tetris_exception("Invalid character."); }
@@ -310,7 +311,8 @@ piece QUAD(std::istream& is, uint32_t side, uint8_t color) {
     	is >> c;
     }
 
-	if (c == '(' || c == '[') {
+	if (c == '(' ) {
+		//|| c == '['
 		opening_char = c;
 		if(side <= 1) throw tetris_exception("Parentheses mismatch or invalid character.");
 		tl = QUAD(is, side/2, color);
@@ -344,6 +346,10 @@ piece QUAD(std::istream& is, uint32_t side, uint8_t color) {
 
 		skip(is);
 		is >> c;
+		if(opening_char=='(' && c ==')' && tl.empty() && tr.empty() && bl.empty() && br.empty())
+			{ throw tetris_exception("Parentheses mismatch or invalid character."); }
+		if(opening_char=='(' && c ==')' && tl.full() && tr.full() && bl.full() && br.full())
+			{ throw tetris_exception("Parentheses mismatch or invalid character."); }
 		if((opening_char=='(' && c !=')') || (opening_char=='[' && c !=']')) 
 			{ throw tetris_exception("Parentheses mismatch or invalid character."); }
 	} else if (c == ']') {
@@ -668,12 +674,17 @@ void tetris::insert(piece const& p, int x) {
             if(p(i, j) && i < y_min) y_min = i;
         }
     }
-    uint32_t y_calc = 0;
+
     uint32_t max_y = m_height - 1 + (p.side() - 1 - y_max);
     uint32_t y = (m_height - 1) - (m_height - p.side() + y_min);
+    uint32_t y_calc = y;
     bool max_reach = false;
+    bool can_be_contained = false;
+
+
     while(y <= max_y && !max_reach) {
         if (containment(p, x, y)) {
+        	can_be_contained = true; 
             y_calc = y;
         } else {
         	max_reach = true;
@@ -681,7 +692,7 @@ void tetris::insert(piece const& p, int x) {
         ++y;
     }
     
-    if (!containment(p, x, y_calc)) {
+    if (!can_be_contained) {
         throw tetris_exception("GAME OVER");
     }
 
@@ -699,7 +710,6 @@ void tetris::insert(piece const& p, int x) {
                 int offset_x = pc->tp.x;
                 uint32_t local_x = j - offset_x;
                 uint32_t local_y = i - offset_y;
-
                 if (local_x < tmp.side() && local_y < tmp.side() &&
                     tmp(local_y, local_x)) {
                     cell_filled = true;
@@ -712,7 +722,10 @@ void tetris::insert(piece const& p, int x) {
         }
 
         if (full) {
+        	
+
             node* pc = m_field;
+
             node* prev = nullptr;
             while (pc) {
                 piece& tmp = pc->tp.p;
@@ -721,7 +734,8 @@ void tetris::insert(piece const& p, int x) {
 				if (local_row >= 0 && local_row < (int)tmp.side()) {
 				    tmp.cut_row(local_row);
 				} else {
-					pc->tp.y += 1;
+					if(i >= offset_y)
+						pc->tp.y += 1;
 				}
 				
                 if (tmp.empty()) {
@@ -937,7 +951,7 @@ tetris TETRIS(std::istream& is) {
 
 	char c = is.peek();
 	if(c >= '0' and c <= '9') {
-		double x = 0.0;
+		uint32_t x = 0;
 		is >> x;
 		score = x;
 	} else {
@@ -948,7 +962,7 @@ tetris TETRIS(std::istream& is) {
 	c = is.peek();
 
 	if(c >= '0' and c <= '9') {
-		double x = 0.0;
+		uint32_t x = 0;
 		is >> x;
 		width = x;
 	} else {
@@ -959,7 +973,7 @@ tetris TETRIS(std::istream& is) {
 	c = is.peek();
 
 	if(c >= '0' and c <= '9') {
-		double x = 0.0;
+		uint32_t x = 0;
 		is >> x;
 		height = x;
 	} else {

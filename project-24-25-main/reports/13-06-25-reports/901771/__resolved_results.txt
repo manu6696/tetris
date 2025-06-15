@@ -1,0 +1,55 @@
+
+Note: If any test cases are not in SUCCESS state, the name of the failed test
+should give you an idea of what to check in your code.
+Write new, thorough tests based on the failed tests.
+A whole battery of tests can fail if there are compilation errors or segmentation 
+faults. If some test cases are marked as SKIPPED, there is probably a 
+segmentation fault. Also check the log.txt file for more
+details about compilation errors and unexpected program terminations.
+
+
+
+
+
+
+**** running test: test_play_games ****
+
+[doctest] doctest version is "2.4.12"
+[doctest] run with "--help" for options
+===============================================================================
+../test/test_play_games.cpp:100:
+TEST CASE:  operator>>: play game D (reading pieces from stream, rotating, and inserting them in tetris field)
+
+../test/test_play_games.cpp:124: FATAL ERROR: REQUIRE( false ) is NOT correct!
+  values: REQUIRE( false )
+  logged: ERROR --> unexpected tetris_exception thrown: GAME OVER
+
+===============================================================================
+[doctest] test cases: 5 | 4 passed | 1 failed | 0 skipped
+[doctest] assertions: 7 | 6 passed | 1 failed |
+[doctest] Status: FAILURE!
+
+
+
+
+
+**** running test: test_tetris_copy ****
+
+[doctest] doctest version is "2.4.12"
+[doctest] run with "--help" for options
+===============================================================================
+../test/test_tetris_copy.cpp:13:
+TEST CASE:  Copy constructor/assignment
+
+../test/test_tetris_copy.cpp:68: FATAL ERROR: REQUIRE( false ) is NOT correct!
+  values: REQUIRE( false )
+  logged: ERROR --> unexpected tetris_exception thrown: GAME OVER
+
+===============================================================================
+[doctest] test cases: 1 | 0 passed | 1 failed | 0 skipped
+[doctest] assertions: 2 | 1 passed | 1 failed |
+[doctest] Status: FAILURE!
+
+
+
+
