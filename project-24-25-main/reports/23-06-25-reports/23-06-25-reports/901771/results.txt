@@ -14,15 +14,9 @@ details about compilation errors and unexpected program terminations.
 [doctest] doctest version is "2.4.12"
 [doctest] run with "--help" for options
 ===============================================================================
-../test/test_empty_full_rotate_cut_row.cpp:105:
-TEST CASE:  cut row
-
-../test/test_empty_full_rotate_cut_row.cpp:105: FATAL ERROR: test case CRASHED: SIGSEGV - Segmentation violation signal
-
-===============================================================================
-[doctest] test cases:  4 |  3 passed | 1 failed | 0 skipped
-[doctest] assertions: 37 | 37 passed | 0 failed |
-[doctest] Status: FAILURE!
+[doctest] test cases:  4 |  4 passed | 0 failed | 0 skipped
+[doctest] assertions: 46 | 46 passed | 0 failed |
+[doctest] Status: SUCCESS!
 
 
 **** running test: test_piece_constructor ****
@@ -30,16 +24,9 @@ TEST CASE:  cut row
 [doctest] doctest version is "2.4.12"
 [doctest] run with "--help" for options
 ===============================================================================
-../test/test_piece_constructor.cpp:13:
-TEST CASE:  Valid constructor
-
-../test/test_piece_constructor.cpp:18: ERROR: CHECK( p.full() == false ) is NOT correct!
-  values: CHECK( true == false )
-
-===============================================================================
-[doctest] test cases: 5 | 4 passed | 1 failed | 0 skipped
-[doctest] assertions: 8 | 7 passed | 1 failed |
-[doctest] Status: FAILURE!
+[doctest] test cases: 5 | 5 passed | 0 failed | 0 skipped
+[doctest] assertions: 8 | 8 passed | 0 failed |
+[doctest] Status: SUCCESS!
 
 
 **** running test: test_piece_copy ****
@@ -95,24 +82,16 @@ TEST CASE:  invalid piece 1
 [doctest] doctest version is "2.4.12"
 [doctest] run with "--help" for options
 ===============================================================================
-../test/test_play_games.cpp:42:
-TEST CASE:  operator>>: play game B (reading pieces from stream, rotating, and inserting them in tetris field)
-
-../test/test_play_games.cpp:60: FATAL ERROR: REQUIRE( equal == true ) is NOT correct!
-  values: REQUIRE( false == true )
-  logged: ERROR --> file was loaded incorrectly.
-
-===============================================================================
 ../test/test_play_games.cpp:100:
 TEST CASE:  operator>>: play game D (reading pieces from stream, rotating, and inserting them in tetris field)
 
-../test/test_play_games.cpp:118: FATAL ERROR: REQUIRE( equal == true ) is NOT correct!
-  values: REQUIRE( false == true )
-  logged: ERROR --> file was loaded incorrectly.
+../test/test_play_games.cpp:124: FATAL ERROR: REQUIRE( false ) is NOT correct!
+  values: REQUIRE( false )
+  logged: ERROR --> unexpected tetris_exception thrown: GAME OVER
 
 ===============================================================================
-[doctest] test cases: 5 | 3 passed | 2 failed | 0 skipped
-[doctest] assertions: 6 | 4 passed | 2 failed |
+[doctest] test cases: 5 | 4 passed | 1 failed | 0 skipped
+[doctest] assertions: 7 | 6 passed | 1 failed |
 [doctest] Status: FAILURE!
 
 
@@ -144,9 +123,9 @@ TEST CASE:  operator>>: play game D (reading pieces from stream, rotating, and i
 ../test/test_tetris_copy.cpp:13:
 TEST CASE:  Copy constructor/assignment
 
-../test/test_tetris_copy.cpp:34: FATAL ERROR: REQUIRE( equal == true ) is NOT correct!
-  values: REQUIRE( false == true )
-  logged: ERROR --> file was loaded incorrectly.
+../test/test_tetris_copy.cpp:68: FATAL ERROR: REQUIRE( false ) is NOT correct!
+  values: REQUIRE( false )
+  logged: ERROR --> unexpected tetris_exception thrown: GAME OVER
 
 ===============================================================================
 [doctest] test cases: 1 | 0 passed | 1 failed | 0 skipped
@@ -159,9 +138,17 @@ TEST CASE:  Copy constructor/assignment
 [doctest] doctest version is "2.4.12"
 [doctest] run with "--help" for options
 ===============================================================================
-[doctest] test cases: 5 | 5 passed | 0 failed | 0 skipped
-[doctest] assertions: 5 | 5 passed | 0 failed |
-[doctest] Status: SUCCESS!
+../test/test_tetris_invalid.cpp:58:
+TEST CASE:  invalid tetris D
+
+../test/test_tetris_invalid.cpp:68: FATAL ERROR: REQUIRE( thrown == true ) is NOT correct!
+  values: REQUIRE( false == true )
+  logged: ERROR --> exception not thrown in tetris::operator>> while reading invalid file format
+
+===============================================================================
+[doctest] test cases: 5 | 4 passed | 1 failed | 0 skipped
+[doctest] assertions: 5 | 4 passed | 1 failed |
+[doctest] Status: FAILURE!
 
 
 **** running test: test_tetris_iterators ****
@@ -169,17 +156,9 @@ TEST CASE:  Copy constructor/assignment
 [doctest] doctest version is "2.4.12"
 [doctest] run with "--help" for options
 ===============================================================================
-../test/test_tetris_iterators.cpp:13:
-TEST CASE:  Iterators
-
-../test/test_tetris_iterators.cpp:29: FATAL ERROR: REQUIRE( equal == true ) is NOT correct!
-  values: REQUIRE( false == true )
-  logged: ERROR --> file was loaded incorrectly.
-
-===============================================================================
-[doctest] test cases: 1 | 0 passed | 1 failed | 0 skipped
-[doctest] assertions: 1 | 0 passed | 1 failed |
-[doctest] Status: FAILURE!
+[doctest] test cases: 1 | 1 passed | 0 failed | 0 skipped
+[doctest] assertions: 8 | 8 passed | 0 failed |
+[doctest] Status: SUCCESS!
 
 
 **** running test: test_tetris_move ****
@@ -187,17 +166,9 @@ TEST CASE:  Iterators
 [doctest] doctest version is "2.4.12"
 [doctest] run with "--help" for options
 ===============================================================================
-../test/test_tetris_move.cpp:13:
-TEST CASE:  Move constructor/assignment
-
-../test/test_tetris_move.cpp:29: FATAL ERROR: REQUIRE( equal == true ) is NOT correct!
-  values: REQUIRE( false == true )
-  logged: ERROR --> file was loaded incorrectly.
-
-===============================================================================
-[doctest] test cases: 1 | 0 passed | 1 failed | 0 skipped
-[doctest] assertions: 1 | 0 passed | 1 failed |
-[doctest] Status: FAILURE!
+[doctest] test cases:  1 |  1 passed | 0 failed | 0 skipped
+[doctest] assertions: 11 | 11 passed | 0 failed |
+[doctest] Status: SUCCESS!
 
 
 **** running test: test_tetris_read ****
@@ -205,33 +176,9 @@ TEST CASE:  Move constructor/assignment
 [doctest] doctest version is "2.4.12"
 [doctest] run with "--help" for options
 ===============================================================================
-../test/test_tetris_read.cpp:13:
-TEST CASE:  tetris::operator>> 1
-
-../test/test_tetris_read.cpp:27: FATAL ERROR: REQUIRE( equal == true ) is NOT correct!
-  values: REQUIRE( false == true )
-  logged: ERROR --> tetris field not loaded correctly
-
-===============================================================================
-../test/test_tetris_read.cpp:32:
-TEST CASE:  tetris::operator>> 2
-
-../test/test_tetris_read.cpp:46: FATAL ERROR: REQUIRE( equal == true ) is NOT correct!
-  values: REQUIRE( false == true )
-  logged: ERROR --> tetris field not loaded correctly
-
-===============================================================================
-../test/test_tetris_read.cpp:51:
-TEST CASE:  tetris::operator>> 3
-
-../test/test_tetris_read.cpp:65: FATAL ERROR: REQUIRE( equal == true ) is NOT correct!
-  values: REQUIRE( false == true )
-  logged: ERROR --> tetris field not loaded correctly
-
-===============================================================================
-[doctest] test cases: 3 | 0 passed | 3 failed | 0 skipped
-[doctest] assertions: 3 | 0 passed | 3 failed |
-[doctest] Status: FAILURE!
+[doctest] test cases: 3 | 3 passed | 0 failed | 0 skipped
+[doctest] assertions: 3 | 3 passed | 0 failed |
+[doctest] Status: SUCCESS!
 
 
 **** running test: test_tetris_read_write ****
@@ -239,31 +186,7 @@ TEST CASE:  tetris::operator>> 3
 [doctest] doctest version is "2.4.12"
 [doctest] run with "--help" for options
 ===============================================================================
-../test/test_tetris_read_write.cpp:13:
-TEST CASE:  tetris::operator>> and tetris::operator<< 1
-
-../test/test_tetris_read_write.cpp:25: FATAL ERROR: REQUIRE( equal == true ) is NOT correct!
-  values: REQUIRE( false == true )
-  logged: ERROR --> tetris field not loaded correctly
-
-===============================================================================
-../test/test_tetris_read_write.cpp:47:
-TEST CASE:  tetris::operator>> and tetris::operator<< 2
-
-../test/test_tetris_read_write.cpp:59: FATAL ERROR: REQUIRE( equal == true ) is NOT correct!
-  values: REQUIRE( false == true )
-  logged: ERROR --> tetris field not loaded correctly
-
-===============================================================================
-../test/test_tetris_read_write.cpp:81:
-TEST CASE:  tetris::operator>> and tetris::operator<< 3
-
-../test/test_tetris_read_write.cpp:93: FATAL ERROR: REQUIRE( equal == true ) is NOT correct!
-  values: REQUIRE( false == true )
-  logged: ERROR --> tetris field not loaded correctly
-
-===============================================================================
-[doctest] test cases: 3 | 0 passed | 3 failed | 0 skipped
-[doctest] assertions: 3 | 0 passed | 3 failed |
-[doctest] Status: FAILURE!
+[doctest] test cases: 3 | 3 passed | 0 failed | 0 skipped
+[doctest] assertions: 6 | 6 passed | 0 failed |
+[doctest] Status: SUCCESS!
 

@@ -75,10 +75,22 @@ int main (int argc, char** argv) {
 
 		
 		tetris s;
-		is >> s;
+		tetris p;
+		tetris t;
+
+		is >> s >> p;
+		t = s;
 		s.print_ascii_art(std::cout);
+		std::cout<<std::endl;
+		p.print_ascii_art(std::cout);
+		std::cout<<std::endl;
+		t.print_ascii_art(std::cout);
 		std::cout << s;
-		
+		std::cout<<std::endl;
+		std::cout << p;
+		std::cout<<std::endl;
+		std::cout << t;
+
 		/*
 		while(true){
 				piece p;
