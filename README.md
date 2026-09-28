@@ -24,7 +24,7 @@ Rappresenta un singolo pezzo di Tetris memorizzato come una matrice quadrata din
 
 * **Funzionalità chiave:**
   * **Rule of 5:** Costruttori di copia/spostamento, distruttore e operatori di assegnamento per la gestione sicura della memoria dinamica.
-  * `rotate()`: Ruota il pezzo di $90^\circ$ in senso orario (trasforma la cella $(i, j)$ nella cella $(j, \text{m\_side} - i - 1)$).
+  * `rotate()`: Ruota il pezzo di $90^\circ$ in senso orario (trasforma la cella $(i, j)$ nella cella $(j, i)$.
   * `cut_row(i)`: Rimuove la riga $i$ dal pezzo e fa scorrere le righe superiori verso il basso di una posizione.
   * Operatori I/O (`operator>>`, `operator<<`) e di confronto (`==`, `!=`).
 
