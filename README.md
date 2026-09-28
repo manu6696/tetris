@@ -87,7 +87,7 @@ $$
 
 ---
 
-## 📊 Formato di Output del Campo `tetris`
+## 📊 Struttura della Griglia di Gioco `tetris`
 
 Il campo di gioco viene stampato/letto nello stream con il seguente formato:
 
