@@ -109,7 +109,7 @@ Il progetto utilizza un `Makefile` per la gestione della compilazione con C++17.
 
 ### Compilazione Standard
 
-Per compilare normalmente il progetto eseguendo l'ottimizzazione del codice (`-O3`) e disabilitando le assunzioni di debug (`-DNDEBUG`), esegui semplicemente:
+Per compilare normalmente il progetto eseguendo l'ottimizzazione del codice (`-O3`) e disabilitando le opzioni di debug (`-DNDEBUG`), eseguire:
 
 ```bash
 make
@@ -119,7 +119,7 @@ Il comando compila la sorgente `src/tetris.cpp` assieme all'entry point `tools/m
 
 ### Esecuzione dell'Eseguibile
 
-Una volta completata la compilazione, puoi avviare l'applicazione con:
+Una volta completata la compilazione, si può avviare l'applicazione con:
 
 ```bash
 ./build/main
