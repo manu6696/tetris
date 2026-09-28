@@ -66,20 +66,25 @@ Sintassi dei quadranti:
 
 ### Esempio:
 
-```text
-4 75 (([]()[]())(()[]()[])([]()()())(()[]()()))
+```
+  4 	75  
+    ( (
+ [ ]()[
+ ]()) (( )[
+ ]()[])([](
+ )()(  )) ( ()[](
+  )() ) )
 ```
 
 Rappresenta un pezzo $4 \times 4$ con colore `75` e la seguente griglia booleana:
 
-$$
-\begin{pmatrix}
-- & X & X & - \\
-- & X & X & - \\
-- & X & X & - \\
-X & X & X & X
-\end{pmatrix}
-$$
+```
+  0 1 2 3
+0 - X X -
+1 - X X -
+2 - X X -
+3 X X X X
+```
 
 ---
 
