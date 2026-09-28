@@ -15,7 +15,6 @@ Questa libreria implementa un motore di gioco per una versione semplificata del 
 * [Formato Ricorsivo dei Pezzi](#-formato-ricorsivo-dei-pezzi)
 * [Struttura della Griglia di Gioco (`tetris`)](#-struttura-della-griglia-di-gioco-tetris)
 * [Compilazione ed Esecuzione](#-compilazione-ed-esecuzione)
-* [Requisiti di Consegna e Vincoli](#-requisiti-di-consegna-e-vincoli)
 
 ---
 
