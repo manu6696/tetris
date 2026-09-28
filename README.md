@@ -4,7 +4,7 @@ Progetto accademico per il corso di **Programmazione e Laboratorio** (A.A. 2024/
 
 Questa libreria implementa un motore di gioco per una versione semplificata del classico **Tetris** in C++, focalizzandosi su due operazioni fondamentali:
 
-1. **Parsing ricorsivo** dei pezzi da uno stream di input tramite decomposizione in quadtree.
+1. **Parsing ricorsivo** dei pezzi da uno stream di input.
 2. **Inserimento e simulazione della fisica** dei pezzi nella griglia di gioco (gestione della gravità, eliminazione delle righe e scorrimento dei pezzi).
 
 ---
@@ -12,7 +12,7 @@ Questa libreria implementa un motore di gioco per una versione semplificata del 
 ## 📑 Indice
 
 * [Panoramica delle Classi](#-panoramica-delle-classi)
-* [Formato Ricorsivo dei Pezzi (Quadtree)](#-formato-ricorsivo-dei-pezzi-quadtree)
+* [Formato Ricorsivo dei Pezzi](#-formato-ricorsivo-dei-pezzi)
 * [Struttura della Griglia di Gioco (`tetris`)](#-struttura-della-griglia-di-gioco-tetris)
 * [Compilazione ed Esecuzione](#-compilazione-ed-esecuzione)
 * [Requisiti di Consegna e Vincoli](#-requisiti-di-consegna-e-vincoli)
@@ -59,9 +59,9 @@ Rappresenta il campo da gioco di dimensioni $W \times H$ e gestisce la posizione
 
 ---
 
-## 🌲 Formato Ricorsivo dei Pezzi (Quadtree)
+## 🌲 Formato Ricorsivo dei Pezzi
 
-I pezzi vengono serializzati/deserializzati utilizzando una rappresentazione sintetica basata su una struttura gerarchica a **quadtree** a 4 quadranti ordinati in senso orario/lettura: **Top-Left (TL)**, **Top-Right (TR)**, **Bottom-Left (BL)**, **Bottom-Right (BR)**.
+I pezzi vengono serializzati/deserializzati utilizzando una rappresentazione sintetica basata su una struttura gerarchica a 4 quadranti ordinati in senso orario/lettura: **Top-Left (TL)**, **Top-Right (TR)**, **Bottom-Left (BL)**, **Bottom-Right (BR)**.
 
 ### Sintassi dello Stream di Input:
 
