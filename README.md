@@ -9,15 +9,6 @@ Questa libreria implementa un motore di gioco per una versione semplificata del 
 
 ---
 
-## 📑 Indice
-
-* [Panoramica delle Classi](#-panoramica-delle-classi)
-* [Formato Ricorsivo dei Pezzi](#-formato-ricorsivo-dei-pezzi)
-* [Struttura della Griglia di Gioco (`tetris`)](#-struttura-della-griglia-di-gioco-tetris)
-* [Compilazione ed Esecuzione](#--compilazione-ed-esecuzione)
-  
----
-
 ## 🧩 Panoramica delle Classi
 
 La libreria si articola principalmente su due componenti strutturali:
@@ -82,7 +73,12 @@ Sintassi dei quadranti:
 Rappresenta un pezzo $4 \times 4$ con colore `75` e la seguente griglia booleana:
 
 $$
-\begin{pmatrix} - & X & X & - \\ - & X & X & - \\ - & X & X & - \\ X & X & X & X  \end{pmatrix}
+\begin{pmatrix}
+- & X & X & - \\
+- & X & X & - \\
+- & X & X & - \\
+X & X & X & X
+\end{pmatrix}
 $$
 
 ---
